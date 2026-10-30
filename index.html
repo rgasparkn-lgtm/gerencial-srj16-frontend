@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta <title>GERENCIAL - SRJ16</title>
+<style>
+* {
+margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+body {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+header {
+    background: #102a43;
+    color: white;
+    padding: 24px;
+}
+header h1 {
+    font-size: 25px;
+}
+header p {
+    margin-top: 7px;
+    color: #cbd5e1;
+}
+.container {
+    display: flex;
+    min-height: calc(100vh - 90px);
+}
+nav {
+    width: 230px;
+    background: #173b5e;
+    padding: 20px 12px;
+}
+nav button {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 8px;
+    border: none;
+    border-radius: 7px;
+    background: transparent;
+    color: white;
+    text-align: left;
+    font-size: 15px;
+    cursor: pointer;
+}
+nav button:hover,
+nav button.active {
+    background: #2563eb;
+}
+main {
+    flex: 1;
+    padding: 30px;
+    min-width: 0;
+}
+h2 {
+    margin-bottom: 22px;
+}
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+    gap: 18px;
+    margin-bottom: 30px;
+}
+.card {
+    background: white;
+    padding: 23px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px #0000000b;
+}
+.card p {
+    color: #64748b;
+    margin-bottom: 12px;
+}
+.card strong {
+    font-size: 27px;
+    color: #173b5e;
+}
+.panel {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    min-height: 180px;
+}
+.panel h3 {
+    margin-bottom: 15px;
+}
+input {
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    margin: 5px 0;
+    max-width: 100%;
+}
+.action {
+    padding: 12px 18px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    margin: 5px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+td, th {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+.page {
+    display: none;
+}
+.page.active {
+    display: block;
+}
+@media(max-width:650px) {
+    .container {
+        display: block;
+    }
+    nav {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(2,1fr);
+    }
+    nav button {
+        font-size: 13px;
+    }
+    main {
+        padding: 17px;
+    }
+}
+</style>
+</head>
+<body>
+
+GERENCIAL – SRJ16
+Sistema de Gestão Empresarial
+
+<nav>
+<button 🏠 Início</button>
+<button onclick="showPage('clientes',this)">👥 Clientes</button>
+    <button onclick="showPage('produtos',this)">📦 Produtos</button>
+    <button onclick="showPage('vendas',this)">💰 Vendas</button>
+    <button onclick="showPage('relatorios',this)">📊 Relatórios</button>
+    <button onclick="showPage('configuracoes',this)">⚙️ Configurações</button>
+</nav>
+
+Painel de Controle
+
+
+Total de clientes
+0
+
+Produtos cadastrados
+0
+
+
+Vendas registradas
+0
+
+
+Faturamento
+R$ 0,00
+
+<        Bem-vindo ao GERENCIAL – SRJ16
+Seu sistema de gestão empresarial começa aqui.
+Utilize o menu lateral para acessar os módulos.
+
+
+
+Cadastro de Clientes
+
+<input id="nomeCliente" placeholder="Nome do cliente">
+<input id="telefoneCliente" placeholder="Telefone">
+<button Cadastrar cliente</button>
+
+ NomeTelefone
+
+
+
+Cadastro de Produtos
+
+<input id="nomeProduto" placeholder="Nome do produto">
+<input id="precoProduto" type="number" step="0.01" placeholder="Preço">
+<button Cadastrar produto</button>
+
+ProdutoPreço
+
+Registro de Vendas
+
+<input id="descricaoVenda" placeholder="Descrição da venda">
+        <input id="valorVenda" type="number" step="0.01" placeholder="Valor da venda">
+        <button class="action" onclick="addVenda()">Registrar venda</button>
+
+DescriçãoValor
+
+
+Relatórios
+
+Resumo financeiro
+Nenhuma venda registrada.
+
+Configurações
+
+GERENCIAL – SRJ16
+Versão inicial do sistema.
+Integração com Supabase será configurada na próxima etapa.
+
+<script>
+let clientes = [];
+let produtos = [];
+let vendas = [];
+
+function showPage(id,btn) {
+document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+btn.classList.add('active');
+}
+
+function addCliente() {
+    const nome = document.getElementById('nomeCliente').value.trim();
+    const telefone = document.getElementById('telefoneCliente').value.trim();
+    if (!nome) return alert('Informe o nome do cliente.');
+    clientes.push({nome,telefone});
+    document.getElementById('listaClientes').innerHTML =
+clientes.map(c => `${escapeHTML(c.nome)}${escapeHTML(c.telefone)}`).join('');
+document.getElementById('nomeCliente').value = '';
+    document.getElementById('telefoneCliente').value = '';
+    atualizar();
+}
+
+function addProduto() {
+    const nome = document.getElementById('nomeProduto').value.trim();
+    const preco = Number(document.getElementById('precoProduto').value);
+    if (!nome || preco <= 0) return alert('Informe o produto e um preço válido.');
+    produtos.push({nome,preco});
+    document.getElementById('listaProdutos').innerHTML =
+        produtos.map(p => `<tr>${escapeHTML(p.nome)}${moeda(p.preco)}`).join('');
+document.getElementById('nomeProduto').value = '';
+document.getElementById('precoProduto').value = '';
+atualizar();
+}
+
+function addVenda() {
+    const descricao = document.getElementById('descricaoVenda').value.trim();
+    const valor = Number(document.getElementById('valorVenda').value);
+    if (!descricao || valor <= 0) return alert('Informe a descrição e um valor válido.');
+vendas.push({descricao,valor});
+document.getElementById('listaVendas').innerHTML =
+vendas.map(v => `${escapeHTML(v.descricao)}${moeda(v.valor)}`).join('');
+document.getElementById('descricaoVenda').value = '';
+document.getElementById('valorVenda').value = '';
+atualizar();
+}
+
+function escapeHTML(value) {
+return String(value).replace(/[&<>"']/g, c => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    })[c]);
+}
+
+function moeda(valor) {
+    return valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+}
+
+function atualizar() {
+    document.getElementById('totalClientes').textContent = clientes.length;
+    document.getElementById('totalProdutos').textContent = produtos.length;
+    document.getElementById('totalVendas').textContent = vendas.length;
+    const total = vendas.reduce((s,v) => s + v.valor,0);
+    document.getElementById('faturamento').textContent = moeda(total);
+    document.getElementById('resumoRelatorio').textContent =
+        'Total de vendas: ' + vendas.length + ' | Faturamento: ' + moeda(total);
+}
+</script>
+
+</body>
+</html>
